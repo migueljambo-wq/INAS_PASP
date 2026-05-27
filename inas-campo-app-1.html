@@ -117,6 +117,7 @@
   <button class="sb" onclick="pq('Beneficiário trouxe substituto aleatório que não é da família')">🚷 Substituto aleatório</button>
   <button class="sb" onclick="pq('Beneficiário não tem documento de identificação válido')">🪪 Sem doc. válido</button>
   <button class="sb" onclick="pq('Familiar presente está a influenciar as respostas do survey')">👥 Influência familiar</button>
+  <button class="sb" onclick="pq('Beneficiário diz que não recebeu a transferência')">💸 Não recebeu transf.</button>
   <button class="sb" onclick="pq('Substituto já recebeu pagamento mas o principal regressa')">🔄 Principal regressa</button>
   <button class="sb" onclick="pq('Beneficiário quer mudar o alternativo registado')">🔁 Mudar alternativo</button>
   <button class="sb" onclick="pq('Beneficiário inscrito em dois distritos diferentes')">⚠️ Dois distritos</button>
@@ -157,7 +158,7 @@ const LINHA_GD = `<div class="bloco bl-gd"><div class="bloco-titulo">📞 LINHA 
 
 const BASE = [
 
-{ tags:['alternativo','beneficiário alternativo','beneficiario alternativo','quem é o alternativo','o que é alternativo'],
+{ tags:['beneficiário alternativo','beneficiario alternativo','quem é o alternativo','o que é alternativo','o que é um alternativo','quem é o beneficiario alternativo','o que faz o alternativo'],
   titulo:'👤 Beneficiário Alternativo',
   resposta: `<p>O beneficiário alternativo é a pessoa do mesmo AF eleita para substituir o principal quando ele não pode comparecer. O nome está registado no <strong>verso do cartão</strong> do beneficiário.</p>
   <p><strong>O alternativo é sempre a primeira pessoa a chamar</strong> — antes de qualquer outro membro do AF. Para receber ou trabalhar no lugar do principal, precisa de apresentar documento de identificação válido e pertencer ao mesmo Agregado Familiar.</p>
@@ -540,7 +541,21 @@ const BASE = [
   ESCALA
 },
 
-{ tags:['principal regressou','principal voltou','principal regressa','principal retornou','principal veio reclamar','principal reclama','dinheiro foi recebido pelo substituto','dinheiro recebido pelo substituto','substituto recebeu dinheiro','substituto recebeu pagamento','principal nao recebeu dinheiro','dinheiro foi para substituto','reclamacao de pagamento','reclamar dinheiro','reclamar pagamento','pagamento indevido','pagamento ao substituto errado'],
+{ tags:['nao recebeu transferencia','nao recebi transferencia','transferencia nao chegou','transferencia nao foi recebida','dinheiro nao chegou','nao recebi dinheiro','nao recebi pagamento','pagamento nao chegou','transferencia em falta','onde esta a transferencia','quando chega transferencia','nao recebi nada','beneficiario nao recebeu'],
+  titulo:'💸 Beneficiário diz que não recebeu a transferência',
+  resposta: `<p><span class="ba">⚠️ Situação de pagamento — não pode ser resolvida no campo</span></p>
+  <p>Questões relacionadas com transferências não recebidas envolvem o sistema de pagamentos e têm de ser verificadas e resolvidas pela GiveDirectly directamente com o beneficiário.</p>
+  <p><strong>O que fazer:</strong></p>
+  <ol>
+    <li>Confirma com o beneficiário o <strong>número de telemóvel</strong> registado no programa — é para esse número que a transferência é enviada</li>
+    <li>Verifica se o número está correcto e activo</li>
+    <li>Orienta o beneficiário a ligar para a linha de apoio da GiveDirectly</li>
+  </ol>` +
+  LINHA_GD +
+  ALERTA(`O técnico de campo <strong>não deve confirmar nem negar</strong> que o pagamento foi ou não efectuado. Apenas a GiveDirectly tem acesso ao sistema de pagamentos para verificar.`)
+},
+
+{ tags:['principal regressou','principal voltou','principal regressa','principal retornou','principal veio reclamar','principal reclama','dinheiro foi recebido pelo substituto','dinheiro recebido pelo substituto','substituto recebeu dinheiro','substituto recebeu pagamento','substituto recebeu transferencia','alternativo recebeu transferencia do principal','alternativo recebeu transferencia','alternativo recebeu pagamentos','alternativo recebeu pagamentos no lugar do principal','beneficiario alternativo recebeu pagamentos','alternativo recebeu no lugar do principal','principal nao recebeu dinheiro','dinheiro foi para substituto','reclamacao de pagamento','reclamar dinheiro','reclamar pagamento','pagamento indevido','pagamento ao substituto errado','transferencia foi para alternativo','transferencia do principal foi para alternativo'],
   titulo:'🔄 Substituto já recebeu pagamento mas o principal regressa',
   resposta: `<p><span class="ba">⚠️ Situação que requer intervenção da GiveDirectly</span></p>
   <p>Esta situação envolve pagamentos já processados e requer verificação ao nível do sistema. O técnico de campo <strong>não deve tomar nenhuma decisão de reembolso ou ajuste</strong> por conta própria.</p>
@@ -642,7 +657,7 @@ document.getElementById('btn-inst').addEventListener('click',async()=>{ if(dp){d
 document.getElementById('fb').addEventListener('click',()=>document.getElementById('bi').classList.remove('v'));
 const mn={name:"Assistente Campo PASP/INAS",short_name:"PASP Campo",start_url:"./",display:"standalone",background_color:"#1a6b3c",theme_color:"#1a6b3c",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a6b3c'/><text y='.9em' font-size='75' x='12'>🏛️</text></svg>",sizes:"512x512",type:"image/svg+xml"}]};
 document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(mn)],{type:'application/json'}));
-if('serviceWorker' in navigator){ const sw=`const C='pasp-v7';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])))});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{}); }
+if('serviceWorker' in navigator){ const sw=`const C='pasp-v8';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])))});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{}); }
 </script>
 </body>
 </html>
