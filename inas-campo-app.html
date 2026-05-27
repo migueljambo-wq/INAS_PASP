@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assistente de Campo — PASP/INAS</title>
+  <meta name="theme-color" content="#1a6b3c" />
+  <link rel="manifest" href="#" id="manifest-link" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--v:#1a6b3c;--vc:#e8f5ee;--vm:#2e8b57;--c:#f4f4f4;--ce:#888;--t:#222;--b:#fff;--s:0 2px 8px rgba(0,0,0,.12)}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:var(--c);color:var(--t);height:100dvh;display:flex;flex-direction:column}
+    header{background:var(--v);color:var(--b);padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--s);flex-shrink:0}
+    .hi{width:40px;height:40px;background:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+    .ht h1{font-size:16px;font-weight:700}.ht p{font-size:12px;opacity:.85}
+    .sd{width:8px;height:8px;background:#4ade80;border-radius:50%;margin-left:auto;flex-shrink:0}
+    .sug{padding:10px 12px 6px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;background:var(--b);border-bottom:1px solid #e0e0e0;scrollbar-width:none}
+    .sug::-webkit-scrollbar{display:none}
+    .sb{white-space:nowrap;background:var(--vc);border:1px solid #a8d5bb;color:var(--v);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;flex-shrink:0;font-weight:500}
+    .sb:active{background:#c5e8d4}
+    .chat{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:12px}
+    .bv{background:var(--b);border-radius:16px;padding:20px;text-align:center;box-shadow:var(--s);border-top:4px solid var(--v)}
+    .bv .em{font-size:40px;margin-bottom:10px}
+    .bv h2{font-size:18px;color:var(--v);margin-bottom:8px}
+    .bv p{font-size:13px;color:#555;line-height:1.5}
+    .bv .tm{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+    .tt{background:var(--vc);color:var(--v);border-radius:12px;padding:4px 10px;font-size:12px;font-weight:500}
+    .msg{max-width:88%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.55;word-break:break-word;animation:fi .2s ease}
+    @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .msg.u{background:var(--v);color:var(--b);align-self:flex-end;border-bottom-right-radius:4px}
+    .msg.b{background:var(--b);color:var(--t);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:var(--s)}
+    .msg.b .mh{font-size:11px;color:var(--v);font-weight:700;margin-bottom:6px}
+    .mt p{margin-bottom:6px}.mt p:last-child{margin-bottom:0}
+    .mt strong{color:#1a4d2e}
+    .mt ul,.mt ol{padding-left:18px;margin:6px 0}.mt li{margin-bottom:4px}
+    .bs{display:inline-block;background:#d1fae5;color:#065f46;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700}
+    .bn{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700}
+    .ba{display:inline-block;background:#fef3c7;color:#92400e;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700}
+    .bi{display:inline-block;background:#dbeafe;color:#1e40af;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:700}
+    .bm{display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:700}
+    .bloco{margin:8px 0;border-radius:8px;overflow:hidden}
+    .bloco-titulo{padding:6px 10px;font-size:12px;font-weight:700;letter-spacing:.3px}
+    .bloco-corpo{padding:8px 10px;font-size:13px;line-height:1.5}
+    .bloco-corpo ul,.bloco-corpo ol{padding-left:16px;margin:4px 0}
+    .bloco-corpo li{margin-bottom:3px}
+    .bl-alerta{background:#fef2f2}.bl-alerta .bloco-titulo{background:#dc2626;color:#fff}
+    .bl-escala{background:#f0f9ff}.bl-escala .bloco-titulo{background:#0284c7;color:#fff}
+    .tabela-pag{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0}
+    .tabela-pag th{background:var(--v);color:#fff;padding:6px 8px;text-align:center}
+    .tabela-pag td{padding:5px 8px;border-bottom:1px solid #e5e7eb;vertical-align:top;line-height:1.4}
+    .tabela-pag tr:nth-child(even) td{background:#f9fafb}
+    .tabela-pag .ck{text-align:center;color:#16a34a;font-weight:700}
+    .pag-valor{font-weight:700;color:var(--v)}
+    .ae{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--b);border-radius:18px;border-bottom-left-radius:4px;box-shadow:var(--s);align-self:flex-start;width:70px}
+    .dot{width:7px;height:7px;background:var(--ce);border-radius:50%;animation:bo 1.2s infinite}
+    .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+    @keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+    .ia{padding:10px 12px;background:var(--b);border-top:1px solid #e0e0e0;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+    textarea{flex:1;border:1.5px solid #ddd;border-radius:22px;padding:10px 16px;font-size:14px;font-family:inherit;resize:none;max-height:100px;outline:none;line-height:1.4;background:var(--c)}
+    textarea:focus{border-color:var(--vm);background:var(--b)}
+    .be{width:44px;height:44px;background:var(--v);border:none;border-radius:50%;color:var(--b);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .be:active{background:var(--vm)}
+    #bi{display:none;background:var(--v);color:var(--b);padding:10px 16px;font-size:13px;align-items:center;gap:10px;flex-shrink:0}
+    #bi.v{display:flex}
+    #bi button{background:var(--b);color:var(--v);border:none;border-radius:12px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px;margin-left:auto}
+    #bi .fb{background:transparent;color:var(--b);font-size:18px;padding:0 4px;margin-left:4px}
+    #admin-btn{position:fixed;bottom:80px;right:12px;background:var(--v);color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;box-shadow:var(--s);display:flex;align-items:center;justify-content:center;opacity:.5}
+    #admin-btn:active{opacity:1}
+    #admin-panel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:999;padding:20px;overflow-y:auto}
+    #admin-panel .ap-box{background:#fff;border-radius:16px;padding:20px;max-width:500px;margin:0 auto}
+    #admin-panel h3{color:var(--v);margin-bottom:12px;font-size:16px}
+    #admin-panel .log-item{border-bottom:1px solid #eee;padding:8px 0;font-size:13px}
+    #admin-panel .log-time{font-size:11px;color:#888}
+    #admin-panel .close-ap{background:var(--v);color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;margin-top:12px;width:100%}
+    #admin-panel .clear-log{background:#fee2e2;color:#991b1b;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;margin-top:6px;width:100%;font-size:12px}
+  </style>
+</head>
+<body>
+
+<div id="bi">
+  📲 Instala esta app no celular para usar offline!
+  <button id="btn-inst">Instalar</button>
+  <button class="fb" id="fb">×</button>
+</div>
+
+<header>
+  <div class="hi">🏛️</div>
+  <div class="ht"><h1>Assistente PASP/INAS</h1><p>Substituições · Pagamentos · Campo</p></div>
+  <div class="sd" title="Offline disponível"></div>
+</header>
+
+<div class="sug">
+  <button class="sb" onclick="pq('Beneficiário faleceu, o que faço?')">☠️ Falecimento</button>
+  <button class="sb" onclick="pq('Beneficiário está doente e não pode comparecer')">🤒 Doença</button>
+  <button class="sb" onclick="pq('Quem é o beneficiário alternativo?')">👤 Alternativo</button>
+  <button class="sb" onclick="pq('Dois com o mesmo código AF')">🔢 Mesmo AF</button>
+  <button class="sb" onclick="pq('Substituto não sabe o nome do principal')">❓ Sem nome</button>
+  <button class="sb" onclick="pq('Dois alegam ter trabalhado')">👥 Dois candidatos</button>
+  <button class="sb" onclick="pq('Como fazer a lista de substituições?')">📋 Lista de subs.</button>
+  <button class="sb" onclick="pq('Calendário de pagamentos TP e ADIGR')">💰 Pagamentos TP+ADIGR</button>
+  <button class="sb" onclick="pq('Calendário de pagamentos só ADIGR')">💰 Pagamentos ADIGR</button>
+  <button class="sb" onclick="pq('Calendário de pagamentos só TP')">💰 Pagamentos TP</button>
+  <button class="sb" onclick="pq('Que documentos são aceites?')">📄 Documentos</button>
+  <button class="sb" onclick="pq('Quem é elegível para o programa?')">✅ Elegibilidade</button>
+  <button class="sb" onclick="pq('Beneficiário ausente na inscrição')">🚫 Ausente</button>
+</div>
+
+<div class="chat" id="chat">
+  <div class="bv">
+    <div class="em">🏛️</div>
+    <h2>Assistente de Campo PASP/INAS</h2>
+    <p>Baseado no <strong>Manual de Operações do PASP</strong> e protocolos confirmados pelo INAS. Funciona <strong>sem internet</strong>.</p>
+    <div class="tm">
+      <span class="tt">☠️ Falecimento</span><span class="tt">🤒 Doença</span>
+      <span class="tt">💰 Pagamentos</span><span class="tt">📋 Substituições</span>
+      <span class="tt">✅ Elegibilidade</span><span class="tt">📄 Documentos</span>
+    </div>
+  </div>
+</div>
+
+<div class="ia">
+  <textarea id="mi" placeholder="Descreve a situação no campo..." rows="1"></textarea>
+  <button class="be" onclick="enviar()">➤</button>
+</div>
+
+<button id="admin-btn" onclick="abrirAdmin()" title="Monitorização de uso">📊</button>
+<div id="admin-panel">
+  <div class="ap-box">
+    <h3>📊 Registo de Perguntas</h3>
+    <div id="log-lista"></div>
+    <button class="clear-log" onclick="limparLog()">🗑️ Limpar registo</button>
+    <button class="close-ap" onclick="fecharAdmin()">Fechar</button>
+  </div>
+</div>
+
+<script>
+const ALERTA = (html) => `<div class="bloco bl-alerta"><div class="bloco-titulo">⚠️ ATENÇÃO</div><div class="bloco-corpo">${html}</div></div>`;
+const ESCALA = `<div class="bloco bl-escala"><div class="bloco-titulo">📤 ESCALAR PARA O GESTOR</div><div class="bloco-corpo">Por favor, sugiro que envie esta questão directamente ao seu <strong>gestor próximo</strong> para escrever ao INAS antes de avançar.</div></div>`;
+
+const BASE = [
+
+{ tags:['alternativo','beneficiário alternativo','beneficiario alternativo','quem é o alternativo','o que é alternativo'],
+  titulo:'👤 Beneficiário Alternativo',
+  resposta: `<p>O beneficiário alternativo é a pessoa do mesmo AF eleita para substituir o principal quando ele não pode comparecer. O nome está registado no <strong>verso do cartão</strong> do beneficiário.</p>
+  <p><strong>O alternativo é sempre a primeira pessoa a chamar</strong> — antes de qualquer outro membro do AF. Para receber ou trabalhar no lugar do principal, precisa de apresentar documento de identificação válido e pertencer ao mesmo Agregado Familiar.</p>
+  <p>Se não houver alternativo registado, ou se ele também não puder comparecer → escala para a Delegação do INAS antes de avançar.</p>`
+},
+
+{ tags:['faleceu','falecido','morreu','morte','óbito','obito','falecimento','perdeu a vida','passou','morto'],
+  titulo:'☠️ Falecimento do beneficiário principal',
+  resposta: `<p><span class="bs">✅ CONFIRMADO PELO INAS</span></p>
+  <p>Com o falecimento, <strong>qualquer membro do mesmo AF pode ser inscrito como substituto</strong> — mesmo que não estivesse previamente registado como alternativo.</p>
+  <p><strong>Para formalizar a substituição:</strong></p>
+  <ol>
+    <li>Certidão de óbito ou declaração da autoridade local</li>
+    <li>BI do substituto + cartão do beneficiário principal falecido</li>
+    <li>Confirmação das <strong>três entidades</strong>: técnico do INAS + Permanente + estruturas locais</li>
+    <li>Registar na lista oficial → enviar ao colega <strong>Niquisse</strong> e arquivar na Delegação</li>
+  </ol>` +
+  ALERTA(`Familiar de fora do AF original <strong>não pode ser inscrito</strong> sem aprovação expressa da Delegação do INAS.`)
+},
+
+{ tags:['doença','doenca','doente','incapaz','incapacidade','impossibilitado','internado','hospitalizado','não pode comparecer','nao pode comparecer','impossibilidade','saúde','saude'],
+  titulo:'🤒 Doença ou incapacidade do beneficiário principal',
+  resposta: `<p><span class="bs">✅ CONFIRMADO PELO INAS</span></p>
+  <p>Para doença ou incapacidade, <strong>qualquer membro do mesmo AF pode ser inscrito como substituto</strong> — mesmo que não estivesse previamente registado como alternativo.</p>
+  <p><strong>Para formalizar a substituição:</strong></p>
+  <ol>
+    <li>Se existir alternativo registado no cartão, começa por ele — é o passo mais rápido</li>
+    <li>Se não puder → qualquer outro membro do mesmo AF pode substituir</li>
+    <li>Confirmação obrigatória das <strong>três entidades</strong>: técnico do INAS + Permanente + estruturas locais</li>
+    <li>Registar na lista oficial de substituições e enviar ao colega <strong>Niquisse</strong></li>
+  </ol>` +
+  ALERTA(`Membros <strong>fora do AF</strong> (irmãos, vizinhos, netos que não pertencem ao agregado familiar) <strong>não podem substituir</strong>. Doença temporária não justifica inscrever ou pagar a quem não é do mesmo AF.`)
+},
+
+{ tags:['ausente','não apareceu','nao apareceu','faltou','não veio','nao veio','não compareceu','nao compareceu','ausência','ausencia'],
+  titulo:'🚫 Beneficiário ausente no acto de inscrição',
+  resposta: `<p><span class="bm">📖 Manual INAS — pág. 19</span></p>
+  <p>Se o principal não comparecer → chama o <strong>alternativo registado no cartão</strong>.</p>
+  <p>Se nenhum dos dois aparecer:</p>
+  <ol>
+    <li>Regista a ausência</li>
+    <li>Agenda 2ª visita com confirmação do secretário do bairro ou líder comunitário</li>
+    <li>Se ausente na 2ª visita → <strong>retirar do programa</strong></li>
+  </ol>
+  <p>Excepção: ausência por <strong>saúde prolongada</strong> pode justificar 3ª inscrição, se testemunhada pela estrutura local, chefe de equipa e comunidade. É excepção — não regra.</p>`
+},
+
+{ tags:['quem recebe','receber pagamento','pagar','quem pode receber','levantar','terceiro receber','pagamento geral'],
+  titulo:'💰 Quem pode receber o pagamento?',
+  resposta: `<p><span class="bm">📖 Manual INAS — pág. 28</span></p>
+  <p>Só podem receber o beneficiário <strong>principal</strong> ou, na sua falta, o <strong>alternativo</strong> registado no cartão. Confirma sempre a identidade com o cartão antes de pagar.</p>
+  <p>O pagador e o Permanente estão <strong>proibidos</strong> de assinar ou marcar impressões nas listas de pagamento.</p>` +
+  ALERTA(`Nunca pagar a terceiros (irmãos, vizinhos, netos) por alegadas doenças ou deslocações. Esses receberão normalmente no mês seguinte.`)
+},
+
+{ tags:['pagamentos tp','pagamentos tp e adigr','pagamentos tp+adigr','tp e adigr','tp+adigr','18600','18.600','saldo tp','valor adigr'],
+  titulo:'💰 Calendário — Participantes TP + ADIGR',
+  resposta: `<p><span class="bi">📊 Tabela GiveDirectly / PASP</span></p>
+  <table class="tabela-pag">
+    <tr><th>Actividade</th><th>Mês 0</th><th>1º Mês</th><th>2º Mês</th><th>3º Mês</th><th>4º Mês</th></tr>
+    <tr><td>Registo e início do TP</td><td class="ck">✔</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">1º Pagamento: 1.050 Mzn</span><br><small>30 dias após início</small></td><td></td><td class="ck">✔</td><td></td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">2º Pagamento: 1.050 Mzn</span><br><small>60 dias após início</small></td><td></td><td></td><td class="ck">✔</td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">3º Pagamento: 18.600 Mzn</span><br><small>Saldo TP + ADIGR · 90 dias</small></td><td></td><td></td><td></td><td class="ck">✔</td><td></td></tr>
+    <tr><td>Coaching final + Acompanhamento</td><td></td><td></td><td></td><td class="ck">✔</td><td class="ck">✔</td></tr>
+  </table>
+  <p style="font-size:12px;color:#555;margin-top:6px">O 3º pagamento de <strong>18.600 Mzn</strong> inclui saldo TP + valor ADIGR.</p>`
+},
+
+{ tags:['pagamentos adigr','só adigr','so adigr','adigr apenas','13350','13.350'],
+  titulo:'💰 Calendário — Participantes ADIGR Apenas',
+  resposta: `<p><span class="bi">📊 Tabela GiveDirectly / PASP</span></p>
+  <table class="tabela-pag">
+    <tr><th>Actividade</th><th>Mês 0</th><th>1º Mês</th><th>2º Mês</th><th>3º Mês</th></tr>
+    <tr><td>Registo e verificação</td><td class="ck">✔</td><td></td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">1º Pagamento: 1.050 Mzn</span><br><small>Após inscrição</small></td><td class="ck">✔</td><td></td><td></td><td></td></tr>
+    <tr><td>Coaching inicial</td><td></td><td class="ck">✔</td><td class="ck">✔</td><td></td></tr>
+    <tr><td><span class="pag-valor">2º Pagamento: 13.350 Mzn</span><br><small>Valor ADIGR · 60 dias após 1º</small></td><td></td><td></td><td class="ck">✔</td><td></td></tr>
+    <tr><td>Coaching final + Acompanhamento</td><td></td><td></td><td class="ck">✔</td><td class="ck">✔</td></tr>
+  </table>
+  <p style="font-size:12px;color:#555;margin-top:6px">Total: 2 pagamentos. O 2º de <strong>13.350 Mzn</strong> é pago 60 dias após o 1º.</p>`
+},
+
+{ tags:['pagamentos tp apenas','só tp','so tp','tp apenas','4200','4.200'],
+  titulo:'💰 Calendário — Participantes TP Apenas',
+  resposta: `<p><span class="bi">📊 Tabela GiveDirectly / PASP</span></p>
+  <table class="tabela-pag">
+    <tr><th>Actividade</th><th>Mês 0</th><th>1º Mês</th><th>2º Mês</th><th>3º Mês</th></tr>
+    <tr><td>Registo e início do TP</td><td class="ck">✔</td><td></td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">1º Pagamento: 1.050 Mzn</span><br><small>30 dias após início</small></td><td></td><td class="ck">✔</td><td></td><td></td></tr>
+    <tr><td><span class="pag-valor">2º Pagamento: 1.050 Mzn</span><br><small>60 dias após início</small></td><td></td><td></td><td class="ck">✔</td><td></td></tr>
+    <tr><td><span class="pag-valor">3º Pagamento: 4.200 Mzn</span><br><small>Saldo TP · 90 dias após início</small></td><td></td><td></td><td></td><td class="ck">✔</td></tr>
+  </table>
+  <p style="font-size:12px;color:#555;margin-top:6px">Total: 3 pagamentos. Sem componente ADIGR.</p>`
+},
+
+{ tags:['mesmo código','mesmo codigo','mesmo af','código af','codigo af','dois beneficiários','dois beneficiarios','dois com o mesmo','duplicado af'],
+  titulo:'⚠️ Dois beneficiários com o mesmo código AF',
+  resposta: `<p><span class="ba">⚠️ Não avançar sem verificar no e-INAS</span></p>
+  <p>Este caso não pode ser resolvido no campo. A decisão correcta só vem depois de verificação no sistema <strong>e-INAS</strong> pelo colega <strong>Niquisse</strong>.</p>
+  <ol>
+    <li>Documenta por escrito — nomes e códigos AF de ambos</li>
+    <li>Contacta a <strong>Delegação do INAS</strong> imediatamente</li>
+    <li>Não registas nenhum dos dois até teres instrução formal</li>
+  </ol>` + ESCALA
+},
+
+{ tags:['dois alegam','dois dizem','dois trabalharam','dois candidatos','disputa','quem tem direito','quem é legítimo'],
+  titulo:'⚠️ Dois alegam ter trabalhado — como decidir',
+  resposta: `<p><span class="bs">✅ CONFIRMADO PELO INAS</span></p>
+  <p><strong>Não existe beneficiário legítimo apenas para o pagamento.</strong> A legitimidade verifica-se pelas presenças e efectividade dos trabalhos públicos.</p>
+  <ol>
+    <li><strong>A pessoa na lista trabalhou?</strong> Se <span class="bn">NÃO</span> → não se actualiza o nome</li>
+    <li><strong>O substituto trabalhou?</strong> Se <span class="bs">SIM</span> → deve indicar o <strong>nome exacto de quem substituía</strong>. Se não sabe e ninguém confirma → não se inscreve</li>
+    <li>A entidade confirmadora deve <strong>indicar o nome</strong> da pessoa substituída — não basta confirmar que trabalhou</li>
+  </ol>
+  <p style="font-size:12px;color:#555">Considera-se beneficiário quem participou de forma <strong>consecutiva</strong> — não apenas por um período isolado.</p>`
+},
+
+{ tags:['não sabe o nome','nao sabe o nome','substituto sem nome','não sabe quem substitui','nao sabe quem substitui','nome desconhecido'],
+  titulo:'🔴 Substituto não conhece o nome do beneficiário principal',
+  resposta: `<p><span class="bs">✅ CONFIRMADO PELO INAS</span></p>
+  <p>Sem indicar o nome de quem substituía, <strong>não é possível inscrever</strong>. Confirmar que "a pessoa trabalhou" não chega — é obrigatório saber quem estava a substituir.</p>
+  <ol>
+    <li>Pergunta ao Permanente, estruturas locais e INAS se alguém confirma o nome</li>
+    <li>Se <strong>nenhuma das três entidades</strong> consegue indicar o nome → <span class="bn">não se inscreve</span></li>
+    <li>Documenta e escala para a Delegação</li>
+  </ol>` + ESCALA
+},
+
+{ tags:['lista de substituições','lista de substituicoes','lista de substitutos','como fazer a lista','lista assinada','enviar para niquisse','lista oficial'],
+  titulo:'📋 Lista oficial de substituições',
+  resposta: `<p><span class="bs">✅ CONFIRMADO PELO INAS</span></p>
+  <p>Toda a pessoa que trabalhou por substituição deve constar nesta lista. Sem ela assinada pelas três entidades, a substituição <strong>não pode ser processada no sistema</strong>.</p>
+  <p><strong>O que vai na lista:</strong></p>
+  <ul>
+    <li>Nome completo do <strong>substituto</strong></li>
+    <li>Nome da <strong>pessoa que está a substituir</strong></li>
+    <li>Código do <strong>AF</strong></li>
+  </ul>
+  <p><strong>Quem assina:</strong> Estruturas locais · Permanente · Equipa técnica INAS/Delegação</p>
+  <p><strong>Após assinatura:</strong> enviar ao colega <strong>Niquisse</strong> · arquivar na Delegação · cópia à GiveDirectly.</p>`
+},
+
+{ tags:['elegível','elegivel','elegibilidade','quem pode ser beneficiário','quem entra no programa','critérios'],
+  titulo:'✅ Quem é elegível para o PASP?',
+  resposta: `<p><span class="bm">📖 Manual INAS — pág. 14</span></p>
+  <ul>
+    <li>Situação de <strong>vulnerabilidade e insegurança alimentar</strong></li>
+    <li>Pelo menos 1 membro com <strong>idade activa (18–60 anos)</strong> apto para trabalhar</li>
+    <li>Residente na comunidade há <strong>mínimo 6 meses</strong></li>
+    <li>Seleccionado pelo processo comunitário e confirmado pelo INAS Central</li>
+  </ul>
+  <p>São <strong>prioritários</strong>: AFs chefiados por mulheres, com pessoas com deficiência, com crianças desnutridas ou alto nível de dependência.</p>
+  <p style="font-size:12px;color:#555;margin-top:6px">A lista final é sempre elaborada pelo <strong>INAS Central</strong> — não é decisão da equipa de campo.</p>`
+},
+
+{ tags:['documento','documentos','o que precisa','o que trazer','bi','certidão','certidao','identificação','identificacao','aceite'],
+  titulo:'📄 Documentos aceites pelo INAS',
+  resposta: `<p><span class="bm">📖 Manual INAS — pág. 17</span></p>
+  <p>Qualquer documento legalmente reconhecido é aceite:</p>
+  <ul>
+    <li>BI · Passaporte · Carta de condução</li>
+    <li>Cartão de eleitor · Cédula pessoal · Certidão/Boletim de nascimento</li>
+  </ul>
+  <p><strong>Para falecimento, adicionalmente:</strong></p>
+  <ul>
+    <li>Certidão de óbito ou declaração da autoridade local</li>
+    <li>Cartão do beneficiário principal falecido</li>
+  </ul>`
+},
+
+{ tags:['permanente','o que é permanente','quem é permanente','função do permanente'],
+  titulo:'👤 O Permanente — quem é e o que faz',
+  resposta: `<p><span class="bm">📖 Manual INAS — Glossário</span></p>
+  <p>O Permanente é um colaborador de campo do INAS da comunidade que conhece os AF elegíveis e confirma substituições e presenças.</p>
+  <p><strong>Nas substituições:</strong> confirma que o substituto pertence ao AF · testemunha o trabalho · assina a lista oficial.</p>` +
+  ALERTA(`O Permanente <strong>não pode assinar nem marcar impressão digital</strong> nas listas de pagamento. O papel dele é confirmar e testemunhar — não pagar nem decidir.`)
+},
+
+{ tags:['subsídio','subsidio','quanto recebe','valor','salário','salario','meticais','dias de trabalho','1050'],
+  titulo:'💵 Valores e condições do subsídio PASP',
+  resposta: `<p><span class="bm">📖 Manual INAS — pág. 31</span></p>
+  <p>Subsídio mensal base: <strong>1.050 Mzn</strong> · 3 dias/semana · 4 horas/dia · máximo 6 meses/ano (96 dias).</p>
+  <ul>
+    <li><strong>1º mês:</strong> pagamento adiantado</li>
+    <li><strong>2º ao 6º mês:</strong> deduzidas as faltas do mês anterior</li>
+    <li><strong>Último mês:</strong> com base na efectividade real</li>
+  </ul>
+  <p style="font-size:12px;color:#555;margin-top:6px">O máximo de dias é para o <strong>AF inteiro</strong>. Os beneficiários nunca devem pagar taxas no acto de pagamento.</p>`
+},
+
+{ tags:['olá','ola','bom dia','boa tarde','boa noite','oi','boas','hey','ajuda','help'],
+  titulo: null,
+  resposta:`<p>Olá! 👋 Estou pronto para ajudar no campo.</p>
+  <p>Baseio-me no <strong>Manual de Operações do PASP</strong> e nos protocolos confirmados pelo INAS. Posso ajudar com:</p>
+  <ul>
+    <li>☠️ Falecimento · 🤒 Doença · 👤 Alternativo · 🚫 Ausências</li>
+    <li>💰 Pagamentos (TP+ADIGR / ADIGR / TP)</li>
+    <li>📋 Lista de substituições · 🔢 Mesmo código AF</li>
+    <li>✅ Elegibilidade · 📄 Documentos · 👤 Permanente</li>
+  </ul>
+  <p style="font-size:12px;color:#555">Para situações não cobertas aqui, envia sempre a questão ao teu gestor antes de avançar.</p>`
+},
+
+{ tags:['obrigado','obrigada','muito obrigado','valeu','brigado','thanks'],
+  titulo: null,
+  resposta:`<p>Fico feliz em ajudar! 😊 Qualquer outra dúvida no campo, estou aqui — mesmo sem internet.</p>`
+}];
+
+function norm(t){ return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s]/g,' '); }
+function encontrar(q){
+  const n=norm(q); let melhor=null,pt=0;
+  for(const it of BASE){
+    let p=0;
+    for(const tg of it.tags) if(n.includes(norm(tg))) p+=tg.split(' ').length*2;
+    if(p>pt){pt=p;melhor=it;}
+  }
+  if(pt>0){ const h=melhor.titulo?`<p><strong>${melhor.titulo}</strong></p>`:''; return h+melhor.resposta; }
+  return `<p>Não encontrei uma resposta específica para essa situação.</p>${ESCALA}`;
+}
+function msgBot(html){ const d=document.createElement('div'); d.className='msg b'; d.innerHTML=`<div class="mh">🏛️ Assistente PASP/INAS</div><div class="mt">${html}</div>`; return d; }
+function msgUser(t){ const d=document.createElement('div'); d.className='msg u'; d.textContent=t; return d; }
+function typing(){ const d=document.createElement('div'); d.className='ae'; d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>'; document.getElementById('chat').appendChild(d); scroll(); return d; }
+function scroll(){ const c=document.getElementById('chat'); setTimeout(()=>{c.scrollTop=c.scrollHeight;},50); }
+function enviar(){ const inp=document.getElementById('mi'); const txt=inp.value.trim(); if(!txt) return; const ch=document.getElementById('chat'); ch.appendChild(msgUser(txt)); inp.value=''; inp.style.height='auto'; scroll(); registarLog(txt); const t=typing(); setTimeout(()=>{ t.remove(); ch.appendChild(msgBot(encontrar(txt))); scroll(); },500+Math.random()*400); }
+function pq(t){ document.getElementById('mi').value=t; enviar(); }
+document.getElementById('mi').addEventListener('input',function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,100)+'px'; });
+document.getElementById('mi').addEventListener('keydown',function(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enviar();} });
+function registarLog(pergunta){ const logs=JSON.parse(localStorage.getItem('pasp_logs')||'[]'); logs.push({ q: pergunta, t: new Date().toLocaleString('pt-MZ'), d: new Date().toISOString() }); if(logs.length>500) logs.shift(); localStorage.setItem('pasp_logs',JSON.stringify(logs)); }
+function abrirAdmin(){ const logs=JSON.parse(localStorage.getItem('pasp_logs')||'[]'); const lista=document.getElementById('log-lista'); if(logs.length===0){ lista.innerHTML='<p style="color:#888;font-size:13px">Nenhuma pergunta registada ainda.</p>'; } else { lista.innerHTML=logs.slice().reverse().map(l=>`<div class="log-item"><div class="log-time">🕐 ${l.t}</div><div>💬 ${l.q}</div></div>`).join(''); } document.getElementById('admin-panel').style.display='block'; }
+function fecharAdmin(){ document.getElementById('admin-panel').style.display='none'; }
+function limparLog(){ localStorage.removeItem('pasp_logs'); document.getElementById('log-lista').innerHTML='<p style="color:#888;font-size:13px">Registo limpo.</p>'; }
+let dp;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); dp=e; document.getElementById('bi').classList.add('v'); });
+document.getElementById('btn-inst').addEventListener('click',async()=>{ if(dp){dp.prompt();await dp.userChoice;dp=null;document.getElementById('bi').classList.remove('v');} });
+document.getElementById('fb').addEventListener('click',()=>document.getElementById('bi').classList.remove('v'));
+const mn={name:"Assistente Campo PASP/INAS",short_name:"PASP Campo",start_url:"./",display:"standalone",background_color:"#1a6b3c",theme_color:"#1a6b3c",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a6b3c'/><text y='.9em' font-size='75' x='12'>🏛️</text></svg>",sizes:"512x512",type:"image/svg+xml"}]};
+document.getElementById('manifest-link').href=URL.createObjectURL(new Blob([JSON.stringify(mn)],{type:'application/json'}));
+if('serviceWorker' in navigator){ const sw=`const C='pasp-v7';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])))});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`; navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{}); }
+</script>
+</body>
+</html>
